@@ -97,9 +97,9 @@ With that done, our server is ready to run. Running this project will start up t
 
 ### Creating a Eureka Client - End User Service in Spring Boot
 
-Now, with our server spun up and ready to register services, let's go ahead and make our *end user service* in Spring Boot. It'll have a single endpoint that accepts JSON data regarding a *Student*. This data is then sent as JSON to our Data Aggregation service that calculates the median grade of the student, and returns it back.
+Now, with our server spun up and ready to register services, let's go ahead and make our *end user service* in Spring Boot. It'll have a single endpoint that accepts JSON data regarding a *Student*. This data is then sent as JSON to our Data Aggregation service that calculates general statistics of the grades.
 
-In practice, this operation would be replaced with much more labor intensive operations, which make sense to be done in dedicated data processing libraries and which justify the use of another service, rather than performing them on the same one.
+In practice, this operation would be replaced with much more labor-intensive operations, which make sense to be done in dedicated data processing libraries and which justify the use of another service, rather than performing them on the same one.
 
 That being said, let's go back and create a directory for our *End User Service*:
 
@@ -135,7 +135,7 @@ Or if you're using Gradle:
 implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-eureka-client', version: ${version}
 ```
 
-Regardless of the initialization type - to mark this application as an Eureka Client, we simply add the `@EnableEurekaClient` annotation to the main class:
+Regardless of the initialization type - to mark this application as a Eureka Client, we simply add the `@EnableEurekaClient` annotation to the main class:
 
 ```java
 @SpringBootApplication
@@ -157,7 +157,7 @@ public class EndUserServiceApplication {
 
 We've also defined a `@Bean` here, so that we can `@Autowire` the `RestTemplate` later on in our controller. This `RestTemplate` will be used to send a `POST` request to the *Data Aggregation Service*. The `@LoadBalanced` annotation signifies that our `RestTeamplate` should use a `RibbonLoadBalancerClient` when sending requests.
 
-Since this application is an Eureka Client, we'll want to give it a *name* for the registry. Other services will refer to this name when relying on it. The name is defined in the `application.properties` or `application.yml` file:
+Since this application is a Eureka Client, we'll want to give it a *name* for the registry. Other services will refer to this name when relying on it. The name is defined in the `application.properties` or `application.yml` file:
 
 ```properties
 server.port = 8060
@@ -239,7 +239,7 @@ public class HomeController {
 }
 ```
 
-This `@RestController` accepts a `POST` request, and deserialies its body into a `Student` object. Then, we're sending a request to our `data-aggregation-service`, which isn't yet implemented, as registered on Eureka, and we pack the JSON results of that call into our `GradesResult` object.
+This `@RestController` accepts a `POST` request, and deserializes its body into a `Student` object. Then, we're sending a request to our `data-aggregation-service`, which isn't yet implemented, as registered on Eureka, and we pack the JSON results of that call into our `GradesResult` object.
 
 Finally, we print the `student` instance we've sent as well as the `grades` instance we constructed from the result.
 
@@ -291,7 +291,7 @@ import py_eureka_client.eureka_client as eureka_client
 
 We'll be using Flask and `request` to handle our incoming requests and return a response, as well a spin up a server. We'll be using Pandas to aggregate data, and we'll use the `py_eureka_client` to register our Flask application to the Eureka Server on `localhost:8761`.
 
-Let's go ahead and set this application up as an Eureka Client and implement a `POST` request handler for the student data:
+Let's go ahead and set this application up as a Eureka Client and implement a `POST` request handler for the student data:
 
 ```python
 rest_port = 8050
