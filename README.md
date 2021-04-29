@@ -32,7 +32,7 @@ Since Eureka is a Java-based project, originally meant for Spring Boot solutions
 
 With that in mind, let's create an *Eureka Server* first.
 
-### Creating an Eureka Server
+### Creating a Eureka Server
 
 We'll be using Spring Boot to create and maintain our Eureka Server. Let's start off by making a directory to house our three projects:
 
@@ -77,9 +77,9 @@ In your `EndUserApplication` file class, which is our entry-point with the `@Spr
 @SpringBootApplication
 @EnableEurekaServer
 public class EurekaServerApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(EurekaServerApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(EurekaServerApplication.class, args);
+    }
 }
 ```
 
@@ -95,7 +95,7 @@ With that done, our server is ready to run. Running this project will start up t
 
 **Note:** Without registering any services, Eureka may incorrectly claim an *UNKNOWN* instance is up.
 
-### Creating an Eureka Client - End User Service in Spring Boot
+### Creating a Eureka Client - End User Service in Spring Boot
 
 Now, with our server spun up and ready to register services, let's go ahead and make our *end user service* in Spring Boot. It'll have a single endpoint that accepts JSON data regarding a *Student*. This data is then sent as JSON to our Data Aggregation service that calculates the median grade of the student, and returns it back.
 
@@ -141,15 +141,15 @@ Regardless of the initialization type - to mark this application as an Eureka Cl
 @SpringBootApplication
 @EnableEurekaClient
 public class EndUserServiceApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(EndUserServiceApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(EndUserServiceApplication.class, args);
+    }
     
     @LoadBalanced
-	@Bean
-	RestTemplate restTemplate() {
-		return new RestTemplate();
-	}
+    @Bean
+    RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
 }
 ```
 
@@ -199,7 +199,6 @@ Now, let's go ahead and define a `Student` model:
 
 ```java
 public class Student {
-
     private String name;
     private double mathGrade;
     private double englishGrade;
@@ -236,7 +235,6 @@ public class HomeController {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(String.format("Sent the Student to the Data Aggregation Service: %s \nAnd got back:\n %s", student.toString(), gradesResult.toString()));
-    
     }
 }
 ```
@@ -247,7 +245,7 @@ Finally, we print the `student` instance we've sent as well as the `grades` inst
 
 Now, let's go ahead and create the *Data Aggregation Service*.
 
-### Creating an Eureka Client - Data Aggregation Service in Flask
+### Creating a Eureka Client - Data Aggregation Service in Flask
 
 The only missing component is the *Data Aggregation Service*, which accepts a *Student*, in JSON format and populates a Pandas `DataFrame`, performs certain operations and returns the result back.
 
@@ -305,13 +303,13 @@ app = Flask(__name__)
 
 @app.route("/calculateGrades", methods=['POST'])
 def hello():
-  data = request.json
-  df = pd.DataFrame(data, index=[0])
-  response = df.describe().to_json()
-  return response
+    data = request.json
+    df = pd.DataFrame(data, index=[0])
+    response = df.describe().to_json()
+    return response
 
 if __name__ == "__main__":
-  app.run(host='0.0.0.0', port = rest_port)
+    app.run(host='0.0.0.0', port = rest_port)
 ```
 
 **Note:** We have to set the host to `0.0.0.0` to open it to external services, lest Flask refuse them to connect.
@@ -364,4 +362,4 @@ In this guide, we've created a microservice environment, where one service relie
 
 These services are built using different frameworks, and different programming languages - though, through REST APIs, communicating between them is straightforward and easy.
 
-The source code for these two services, including the Eureka Server is available on <a target="_blank" href="">Github</a>.
+The source code for these two services, including the Eureka Server is available on <a target="_blank" href="https://github.com/StackAbuse/eureka-microservices-tutorial">Github</a>.
